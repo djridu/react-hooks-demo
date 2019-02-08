@@ -24,6 +24,9 @@ export default React.memo(() => {
             }}
         >
             <input {...text} />
+            <button type="submit">
+                Add Todo
+            </button>
         </form>
     );
 });

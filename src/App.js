@@ -9,26 +9,29 @@ const useImmerReducer = (reducer, initialState) => {
     return React.useReducer(produce(reducer), initialState);
 };
 
-const todosReducer = (todos, action) => {
-    switch (action.type) {
+const todosReducer = (state, action) => {
+    const { type, payload } = action;
+
+    switch (type) {
         case 'ADD_TODO':
-            todos.unshift({ text: action.payload, complete: false });
+            state.unshift({ text: payload, complete: false });
             return;
         case 'TOGGLE_COMPLETE':
-            todos[action.payload].complete = !todos[action.payload].complete;
+            state[payload.id].complete = !state[payload.id].complete;
             return;
-        case 'RESET':
-            return [];
+        case 'REMOVE_ITEM':
+            return state.filter(item => item.id !== action.payload.id);
         default:
-            return todos;
+            return state;
     }
 };
 
 export default () => {
-    const [todos, dispatch] = useImmerReducer(todosReducer, []);
+    const initialState = [];
+    const [state, dispatch] = useImmerReducer(todosReducer, initialState);
 
     return (
-        <TodoContext.Provider value={{ todos, dispatch }}>
+        <TodoContext.Provider value={{ state, dispatch }}>
             <TodoView />
             {/*<RandomUser/>*/}
         </TodoContext.Provider>
